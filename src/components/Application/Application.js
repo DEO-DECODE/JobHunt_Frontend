@@ -28,7 +28,7 @@ const Application = () => {
     try {
       const res = await fetch("api/v1/application/post", {
         method: "POST",
-        body: productData,
+        body: formData,
       });
       const data = await res.json();
       if (data.success === false) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
+import toast from "react-hot-toast";
 const PostJob = () => {
   const [title, serTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -12,7 +13,61 @@ const PostJob = () => {
   const [salaryTo, setSalaryTo] = useState("");
   const [fixedSalary, setFixedSalary] = useState("");
   const [salaryType, setSalaryType] = useState("default");
-  const handleJobPost = () => {};
+  const navigate = useNavigate();
+  const [auth, setAuth] = useAuth();
+  const handleJobPost = async (e) => {
+    e.preventDefault();
+    if (salaryType === "Fixed Salary") {
+      setSalaryFrom("");
+      setSalaryFrom("");
+    } else if (salaryType === "Ranged Salary") {
+      setFixedSalary("");
+    } else {
+      setSalaryFrom("");
+      setSalaryTo("");
+      setFixedSalary("");
+    }
+    try {
+      const res = await fetch("api/v1/job/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body:
+          fixedSalary.length >= 4
+            ? JSON.stringify({
+                title,
+                description,
+                category,
+                country,
+                city,
+                location,
+                fixedSalary,
+              })
+            : JSON.stringify({
+                title,
+                description,
+                category,
+                country,
+                city,
+                location,
+                salaryFrom,
+                salaryTo,
+              }),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+      }
+      toast.success(data.message);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  if (!auth.isAuthorized || (auth.user && auth.user.role !== "Employer")) {
+    navigate("/");
+  }
   return (
     <>
       <div className="job_post page">
