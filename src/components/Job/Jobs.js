@@ -8,7 +8,7 @@ const Jobs = () => {
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
-        const res = await fetch("api/v1/job/getall");
+        const res = await fetch("/api/v1/job/getall");
         const data = await res.json();
         if (data.success === false) {
           console.log(data.message);

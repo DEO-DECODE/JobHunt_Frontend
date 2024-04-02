@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../context/auth.js";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+
 const Application = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,9 +13,11 @@ const Application = () => {
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
+
   const handleFileChange = (e) => {
     setResume(e.target.files[0]);
   };
+
   const handleApplication = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -25,8 +28,9 @@ const Application = () => {
     formData.append("coverLetter", coverLetter);
     formData.append("resume", resume);
     formData.append("jobId", id);
+
     try {
-      const res = await fetch("api/v1/application/post", {
+      const res = await fetch("/api/v1/application/post", {
         method: "POST",
         body: formData,
       });
@@ -47,9 +51,11 @@ const Application = () => {
       console.log(error.message);
     }
   };
+
   if (!auth.isAuthorized || (auth.user && auth.user.role === "Employer")) {
-    navigateTo("/");
+    navigate("/");
   }
+
   return (
     <section className="application">
       <div className="container">
@@ -58,36 +64,40 @@ const Application = () => {
           <input
             type="text"
             value={name}
-            onChange={setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Your Name"
           />
           <input
             type="email"
             value={email}
-            onChange={setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="Your Email"
           />
           <input
             type="number"
             value={phone}
-            onChange={setPhone(e.target.value)}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="Your Phone number"
           />
           <input
             type="text"
             value={address}
-            onChange={setAddress(e.target.value)}
+            onChange={(e) => setAddress(e.target.value)}
             placeholder="Your Address"
           />
           <textarea
             rows={10}
             value={coverLetter}
-            onChange={setCoverLetter(e.target.value)}
+            onChange={(e) => setCoverLetter(e.target.value)}
             placeholder="Write a Cover Letter"
           />
           <div>
             <label
-              style={{ textAlign: "start", display: "block", fontSize: "20px" }}
+              style={{
+                textAlign: "start",
+                display: "block",
+                fontSize: "20px",
+              }}
             >
               Select Resume
             </label>

@@ -18,7 +18,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("api/v1/user/register", {
+      const res = await fetch("/api/v1/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +33,7 @@ const Register = () => {
       });
       const data = await res.json();
       if (data.success === false) {
-        toast.message(data.message);
+        console.log(data.message);
       }
       toast.success(data.message);
       setName("");
@@ -43,7 +43,7 @@ const Register = () => {
       setRole("");
       setAuth({ ...auth, isAuthorized: true });
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.message);
     }
   };
   if (auth.isAuthorized) {

@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import { MdOutlineMailOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import { RiLock2Fill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/auth";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("api/v1/user/login", {
+      console.log("Inside Login function");
+      const response = await fetch("/api/v1/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,22 +27,26 @@ const Login = () => {
           password,
           role,
         }),
+        credentials: "include",
       });
-      const data= await res.json();
-      if(data.success===false){
-        toast.error(data.message);
+      const data = await response.json();
+      console.log(data);
+      if (data.success === false) {
+        console.log(data.message);
       }
+      toast.success(data.message);
       setEmail("");
       setPassword("");
       setRole("");
-      setAuth({...auth, isAuthorized: true});
-      if(auth.isAuthorized){
+      setAuth(prevAuth => ({ ...prevAuth, isAuthorized: true }));
+      if (auth.isAuthorized) {
         navigate("/");
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
+
   return (
     <>
       <section className="authPage">
@@ -49,7 +55,7 @@ const Login = () => {
             <img src="/JobZeelogo.png" alt="logo" />
             <h3>Login to your account</h3>
           </div>
-          <form onSubmit={handleLogin}>
+          <form>
             <div className="inputTag">
               <label>Login As</label>
               <div>
@@ -85,7 +91,9 @@ const Login = () => {
                 <RiLock2Fill />
               </div>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit" onClick={handleLogin}>
+              Login
+            </button>
             <Link to={"/register"}>Register Now</Link>
           </form>
         </div>

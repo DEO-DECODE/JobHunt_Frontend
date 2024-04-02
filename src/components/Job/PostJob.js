@@ -28,7 +28,7 @@ const PostJob = () => {
       setFixedSalary("");
     }
     try {
-      const res = await fetch("api/v1/job/post", {
+      const res = await fetch("/api/v1/job/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
