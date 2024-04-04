@@ -46,9 +46,7 @@ const Register = () => {
       toast.error(error.message);
     }
   };
-  if (auth.isAuthorized) {
-    navigate("/");
-  }
+
   return (
     <>
       <section className="authPage">

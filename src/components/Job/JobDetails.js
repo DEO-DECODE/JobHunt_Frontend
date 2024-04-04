@@ -16,7 +16,7 @@ const JobDetails = () => {
       if (data.success === false) {
         console.log(data.message);
       }
-      setJob(data);
+      setJob(data.job);
     } catch (error) {
       console.log(error.message);
     }

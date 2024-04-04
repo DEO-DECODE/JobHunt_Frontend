@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
-import toast from "react-hot-toast";
 const PostJob = () => {
-  const [title, serTitle] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [country, setCountry] = useState("");
@@ -13,8 +13,8 @@ const PostJob = () => {
   const [salaryTo, setSalaryTo] = useState("");
   const [fixedSalary, setFixedSalary] = useState("");
   const [salaryType, setSalaryType] = useState("default");
-  const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
+  const navigate = useNavigate();
   const handleJobPost = async (e) => {
     e.preventDefault();
     if (salaryType === "Fixed Salary") {
@@ -27,47 +27,56 @@ const PostJob = () => {
       setSalaryTo("");
       setFixedSalary("");
     }
+
+    const data =
+      fixedSalary.length >= 4
+        ? JSON.stringify({
+            title,
+            description,
+            category,
+            country,
+            city,
+            location,
+            fixedSalary,
+          })
+        : JSON.stringify({
+            title,
+            description,
+            category,
+            country,
+            city,
+            location,
+            salaryFrom,
+            salaryTo,
+          });
+
     try {
-      const res = await fetch("/api/v1/job/post", {
+      const response = await fetch("/api/v1/job/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body:
-          fixedSalary.length >= 4
-            ? JSON.stringify({
-                title,
-                description,
-                category,
-                country,
-                city,
-                location,
-                fixedSalary,
-              })
-            : JSON.stringify({
-                title,
-                description,
-                category,
-                country,
-                city,
-                location,
-                salaryFrom,
-                salaryTo,
-              }),
+        body: data,
+        credentials: "include",
       });
-      const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
+
+      const responseData = await response.json();
+
+      if (responseData.success === false) {
+        console.error(responseData.message);
       }
-      toast.success(data.message);
+
+      toast.success(responseData.message);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
+      toast.error("Failed to post job.");
     }
   };
 
   if (!auth.isAuthorized || (auth.user && auth.user.role !== "Employer")) {
     navigate("/");
   }
+
   return (
     <>
       <div className="job_post page">
@@ -78,7 +87,7 @@ const PostJob = () => {
               <input
                 type="text"
                 value={title}
-                onChange={(e) => serTitle(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="Job Title"
               />
               <select
@@ -110,29 +119,26 @@ const PostJob = () => {
                 <option value="Data Entry Operator">Data Entry Operator</option>
               </select>
             </div>
-            <option value="">Select Category</option>
-            <option value="Graphics & Design">Graphics & Design</option>
-            <option value="Mobile App Development">
-              Mobile App Development
-            </option>
-            <option value="Frontend Web Development">
-              Frontend Web Development
-            </option>
-            <option value="MERN Stack Development">
-              MERN STACK Development
-            </option>
-            <option value="Account & Finance">Account & Finance</option>
-            <option value="Artificial Intelligence">
-              Artificial Intelligence
-            </option>
-            <option value="Video Animation">Video Animation</option>
-            <option value="MEAN Stack Development">
-              MEAN STACK Development
-            </option>
-            <option value="MEVN Stack Development">
-              MEVN STACK Development
-            </option>
-            <option value="Data Entry Operator">Data Entry Operator</option>
+            <div className="wrapper">
+              <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Country"
+              />
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="City"
+              />
+            </div>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Location"
+            />
             <div className="salary_wrapper">
               <select
                 value={salaryType}

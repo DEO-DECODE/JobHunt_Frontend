@@ -46,7 +46,7 @@ const Application = () => {
       setAddress("");
       setResume("");
       toast.success(data.message);
-      navigate("/job/getall");
+      // navigate("/job/getall");
     } catch (error) {
       console.log(error.message);
     }

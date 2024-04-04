@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
+
 const Jobs = () => {
   const [auth, setAuth] = useAuth();
   const [jobs, setJobs] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAllJobs = async () => {
       try {
@@ -13,16 +15,18 @@ const Jobs = () => {
         if (data.success === false) {
           console.log(data.message);
         }
-        setJobs(data);
+        setJobs(data.jobs);
       } catch (error) {
         console.log(error.message);
       }
     };
+    console.log(auth);
+    // console.log(auth.isAuthorized);
+    // Move the auth check and navigation inside the useEffect
+
     fetchAllJobs();
-  }, []);
-  if (!auth.isAuthorized) {
-    navigate("/");
-  }
+  }, [auth.isAuthorized]); // Include dependencies for useEffect
+
   return (
     <>
       <section className="jobs page">

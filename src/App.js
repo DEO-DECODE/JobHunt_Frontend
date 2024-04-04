@@ -8,6 +8,7 @@ import JobDetails from "./components/Job/JobDetails.js";
 import Jobs from "./components/Job/Jobs";
 import PostJob from "./components/Job/PostJob";
 import { useAuth } from "./context/auth.js";
+import "./App.css";
 const App = () => {
   const [auth, setAuth] = useAuth();
   useEffect(() => {
@@ -31,9 +32,9 @@ const App = () => {
     fetchUser();
     // console.log(auth);
   }, [auth.isAuthorized]);
-  // useEffect(() => {
-  //   console.log(auth);
-  // }, [auth.user]);
+  useEffect(() => {
+    console.log(auth);
+  }, [auth.user]);
   return (
     <>
       <Router>
